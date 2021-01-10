@@ -31,3 +31,14 @@ func GetList(ctx context.Context) (model.Tasks, error) {
 
 	return tasks, nil
 }
+
+func GetTask(ctx context.Context, id int) (model.Task, error) {
+	row := DB.QueryRowContext(ctx, "SELECT Id, Title, Description FROM Tasks WHERE id=?", id)
+	var task model.Task
+	if err := row.Scan(&task.Id, &task.Title, &task.Description); err != nil {
+		log.Printf("row.Scan Error: ", err)
+		return task, err
+	}
+
+	return task, nil
+}
