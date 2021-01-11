@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/fumist23/api-handson/database"
 	"github.com/labstack/echo"
+	"golang.org/x/crypto/ssh"
 	"log"
 	"net/http"
 	"strconv"
@@ -30,7 +31,9 @@ func FindById(c echo.Context) error {
 }
 
 func CreateTask(c echo.Context) error {
-	return nil
+	ctx := c.Request().Context()
+	//ここでc.Contextからrequestのbodyのなかのtaskを受け取る
+	result, err := database.InsertTask(ctx, task)
 }
 
 func UpdateTask(c echo.Context) error {

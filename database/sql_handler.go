@@ -42,3 +42,7 @@ func GetTask(ctx context.Context, id int) (model.Task, error) {
 
 	return task, nil
 }
+
+func InsertTask(ctx context.Context, task model.Task) (bool, error) {
+
+}
