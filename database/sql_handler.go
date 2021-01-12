@@ -44,5 +44,5 @@ func GetTask(ctx context.Context, id int) (model.Task, error) {
 }
 
 func InsertTask(ctx context.Context, task model.Task) (bool, error) {
-
+	result, err := DB.Query("INSERT INTO Tasks(Title, Description) VALUES(?, ?)", task.Title, task.Description)
 }
