@@ -44,5 +44,31 @@ func GetTask(ctx context.Context, id int) (model.Task, error) {
 }
 
 func InsertTask(ctx context.Context, task model.Task) (bool, error) {
-	result, err := DB.Query("INSERT INTO Tasks(Title, Description) VALUES(?, ?)", task.Title, task.Description)
+	_, err := DB.QueryContext(ctx, "INSERT INTO Tasks(Title, Description) VALUES(?, ?)", task.Title, task.Description)
+	log.Printf("error in InsertTask: %v", err)
+	if err != nil {
+		log.Printf("error: InsertTask: %v", err)
+		return false, err
+	}
+	return true, nil
+}
+
+func UpdateTask(ctx context.Context, id int, task model.Task) (bool, error) {
+	_, err := DB.QueryContext(ctx, "UPDATE Tasks SET Title=?, Description=? WHERE id=?", task.Title, task.Description, id)
+	log.Printf("error in UpdateTask: %v", err)
+	if err != nil {
+		log.Printf("error: UpdateTask: %v", err)
+		return false, err
+	}
+	return true, nil
+}
+
+func DeleteTask(ctx context.Context, id int) (bool, error) {
+	_, err := DB.QueryContext(ctx, "DELETE FROM Tasks WHERE id=?", id)
+	log.Printf("error in DeleteTask: %v", err)
+	if err != nil {
+		log.Printf("error: DeleteTask: %v", err)
+		return false, err
+	}
+	return true, nil
 }

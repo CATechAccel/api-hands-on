@@ -2,8 +2,8 @@ package controller
 
 import (
 	"github.com/fumist23/api-handson/database"
+	"github.com/fumist23/api-handson/model"
 	"github.com/labstack/echo"
-	"golang.org/x/crypto/ssh"
 	"log"
 	"net/http"
 	"strconv"
@@ -32,14 +32,40 @@ func FindById(c echo.Context) error {
 
 func CreateTask(c echo.Context) error {
 	ctx := c.Request().Context()
+	// TODO: taskはrequestから受け取るようにする
+	task := model.Task{
+		Title:       "タイトルだよ！！",
+		Description: "説明だよ！！",
+	}
 	//ここでc.Contextからrequestのbodyのなかのtaskを受け取る
-	result, err := database.InsertTask(ctx, task)
+	_, err := database.InsertTask(ctx, task)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "InsertTask Error")
+	}
+	return c.String(http.StatusCreated, "Created!!")
 }
 
 func UpdateTask(c echo.Context) error {
-	return nil
+	ctx := c.Request().Context()
+	id, _ := strconv.Atoi(c.Param("id"))
+	// TODO: taskはrequestから受け取るようにする
+	task := model.Task{
+		Title:       "タイトル変更します！！",
+		Description: "Description変更します！！",
+	}
+	_, err := database.UpdateTask(ctx, id, task)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "UpdateTask Error")
+	}
+	return c.String(http.StatusCreated, "Updated!!")
 }
 
 func DeleteTask(c echo.Context) error {
-	return nil
+	ctx := c.Request().Context()
+	id, _ := strconv.Atoi(c.Param("id"))
+	_, err := database.DeleteTask(ctx, id)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "DeleteTask Error")
+	}
+	return c.String(http.StatusOK, "Deleted!!")
 }
