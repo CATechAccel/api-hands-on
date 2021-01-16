@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"github.com/fumist23/api-handson/database"
 	"github.com/fumist23/api-handson/model"
 	"github.com/labstack/echo"
@@ -32,13 +33,9 @@ func FindById(c echo.Context) error {
 
 func CreateTask(c echo.Context) error {
 	ctx := c.Request().Context()
-	// TODO: taskはrequestから受け取るようにする
-	task := model.Task{
-		Title:       "タイトルだよ！！",
-		Description: "説明だよ！！",
-	}
-	//ここでc.Contextからrequestのbodyのなかのtaskを受け取る
-	_, err := database.InsertTask(ctx, task)
+	var task model.Task
+	err := json.NewDecoder(c.Request().Body).Decode(&task)
+	_, err = database.InsertTask(ctx, task)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "InsertTask Error")
 	}
@@ -48,12 +45,13 @@ func CreateTask(c echo.Context) error {
 func UpdateTask(c echo.Context) error {
 	ctx := c.Request().Context()
 	id, _ := strconv.Atoi(c.Param("id"))
-	// TODO: taskはrequestから受け取るようにする
-	task := model.Task{
-		Title:       "タイトル変更します！！",
-		Description: "Description変更します！！",
+	var task model.Task
+	err := json.NewDecoder(c.Request().Body).Decode(&task)
+	if err != nil {
+		log.Printf("failed to decode request body %v", err)
+		return c.String(http.StatusInternalServerError, "failed to decode request")
 	}
-	_, err := database.UpdateTask(ctx, id, task)
+	_, err = database.UpdateTask(ctx, id, task)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "UpdateTask Error")
 	}
